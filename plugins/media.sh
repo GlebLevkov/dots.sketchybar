@@ -2,34 +2,44 @@
 
 STATE="$(media-control get)"
 
-MEDIA_TITLE="$(echo "$STATE" | jq -r '.title')"
-MEDIA_AUTHOR="$(echo "$STATE" | jq -r '.artist')"
-MEDIA_ARTWORK="$(echo "$STATE" | jq -r '.artworkData')"
-MEDIA_BUNDLE_ID="$(echo "$STATE" | jq -r '.bundleIdentifier')"
-
-LABEL=""
-
-if [[ -n "$MEDIA_TITLE" ]]; then
-  LABEL="$MEDIA_TITLE"
+if [[ -z "$STATE" ]]; then
+  sketchybar --set "$NAME" drawing=off
+  exit 0
 fi
 
-if [[ "$MEDIA_AUTHOR" != "null" ]]; then
-  LABEL="$LABEL / $MEDIA_AUTHOR"
+IFS=$'\n' read -d '' -r -a FIELDS <<<"$(echo "$STATE" | jq -r '[.title, .artist, .artworkData, .bundleIdentifier, .playing] | .[]')"
+
+MEDIA_TITLE=${FIELDS[0]}
+MEDIA_ARTIST=${FIELDS[1]}
+MEDIA_ARTWORK=${FIELDS[2]}
+MEDIA_BUNDLE_ID=${FIELDS[3]}
+MEDIA_PLAYING=${FIELDS[4]}
+
+echo "MEDIA_TITLE $MEDIA_TITLE"
+echo "MEDIA_ARTIST $MEDIA_ARTIST"
+echo "MEDIA_PLAYING $MEDIA_PLAYING"
+
+if [[ "$MEDIA_BUNDLE_ID" == "app.zen-browser.zen" ]]; then
+  sketchybar --set "$NAME" drawing=off
+  exit 0
 fi
+
+if [[ "$MEDIA_PLAYING" != "true" ]] || [[ -z "$MEDIA_TITLE" ]]; then
+  sketchybar --set "$NAME" drawing=off
+  exit 0
+fi
+
+LABEL="$MEDIA_TITLE"
+if [[ "$MEDIA_ARTIST" != "null" && -n "$MEDIA_ARTIST" ]]; then
+  LABEL+=" / $MEDIA_ARTIST"
+fi
+
+args=("--set" "$NAME" label="$LABEL")
 
 if [[ -n "$MEDIA_ARTWORK" ]]; then
-  echo "$MEDIA_ARTWORK" | base64 --decode > /tmp/sketchybar-cover
+  COVER_PATH="/tmp/sketchybar-cover"
+  echo "$MEDIA_ARTWORK" | base64 --decode >"$COVER_PATH"
+  args+=("background.image.string=$COVER_PATH")
 fi
 
-# Disable media from zen-browser
-if [[ "$MEDIA_BUNDLE_ID" == "app.zen-browser.zen" ]]; then 
-  STATE=""
-fi
-
-if [ -n "$STATE" ]; then
-  if [[ -n "$MEDIA_ARTWORK" ]]; then 
-    sketchybar --set "$NAME" label="$LABEL" background.image.string="/tmp/sketchybar-cover" drawing=on
-  else
-    sketchybar --set "$NAME" label="$LABEL" drawing=on
-  fi
-fi
+sketchybar "${args[@]}" drawing=on
