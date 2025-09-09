@@ -135,6 +135,15 @@ volume=(
     script="$PLUGIN_SHARED_DIR/volume.sh"
 )
 
+vpn=(
+    vpn
+    icon.color=0xff8aadf4
+    label.font="$FONT_FACE:Medium:12.0"
+    script="$PLUGIN_SHARED_DIR/vpn.sh"
+    click_script="/Users/gleblevkov/workflow/sfera-user-login/sfera-user-login.sh gen --clean test1 | pbcopy"
+    update_freq=20
+)
+
 weather=(
     weather
     icon.drawing=off
@@ -157,5 +166,6 @@ sketchybar \
     --add item clock right --set "${clock[@]}" \
     --add item battery right --set "${battery[@]}" \
     --add item volume right --set "${volume[@]}" --subscribe volume volume_change \
+    --add item vpn right --set "${vpn[@]}" \
     --update \
     --trigger space_change
