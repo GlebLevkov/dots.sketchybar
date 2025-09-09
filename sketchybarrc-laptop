@@ -85,6 +85,7 @@ media=(
     scroll_texts=on
     icon.color=0xff8aadf4
     script="$PLUGIN_SHARED_DIR/media.sh"
+    click_script="$PLUGIN_SHARED_DIR/media.click.sh"
     background.color=0x00000000
     background.image.drawing=on
     background.image="media.artwork"
@@ -92,6 +93,12 @@ media=(
     background.image.padding_left=0
     background.image.scale=0.18
     update_freq=10
+)
+
+big_cover=(
+    big_cover
+    drawing=off
+    background.image.corner_radius=10
 )
 
 reminders=(
@@ -144,6 +151,7 @@ sketchybar \
     --add item front_app.separator left --set "${front_app_separator[@]}" \
     --add item front_app.name left --set "${front_app_name[@]}" \
     --add item media q --set "${media[@]}" --subscribe mouse.clicked \
+    --add item big_cover popup.media --set "${big_cover[@]}" \
     --add item reminders e --set "${reminders[@]}" --subscribe reminders front_app_switched \
     --add bracket front_app_bracket front_app front_app.separator front_app.name --subscribe front_app front_app_switched \
     --add item clock right --set "${clock[@]}" \
