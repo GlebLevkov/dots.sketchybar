@@ -11,7 +11,7 @@ if [ "$SENDER" = "volume_change" ]; then
     ICON="􁏎 $DEVICE_NAME"
   fi
   if [ "$DEVICE_NAME" = "Steinberg UR22" ]; then
-    ICON="􁏎 UR22"
+    ICON="􁏎"
   fi
   if [ "$DEVICE_TYPE" = "Bluetooth"  ]; then
     ICON="􀑈"
