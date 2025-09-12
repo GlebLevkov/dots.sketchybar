@@ -1,3 +1,3 @@
 #!/usr/bin/env zsh
 
-sketchybar --set $NAME label="$(date '+%a %b %-d %-H:%M')"
+sketchybar --set $NAME icon="$(date '+%a %b %-d')" label="$(date +%H:%M)"

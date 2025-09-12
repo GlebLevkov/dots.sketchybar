@@ -6,6 +6,7 @@ PLUGIN_DIR="$HOME/.config/sketchybar/plugins-laptop"
 PLUGIN_SHARED_DIR="$HOME/.config/sketchybar/plugins"
 UTIL_DIR="$HOME/.config/sketchybar/util"
 EXT_DIR="$HOME/.config/sketchybar/ext"
+ITEM_DIR="$HOME/.config/sketchybar/items"
 
 SPACE_ID=$(echo "$INFO" | jq -r '."display-1"')
 
@@ -108,7 +109,7 @@ big_cover=(
 
 reminders=(
     reminders
-    label.max_chars=60
+    label.max_chars=45
     padding_left=4
     icon.drawing=off
     label.padding_left=4
@@ -120,9 +121,13 @@ reminders=(
 
 clock=(
     clock
-    icon=󰃰
-    icon.color=0xffed8796
     update_freq=10
+    background.color=0x00000000
+    icon.color=0xffcad3f5
+    icon.font="$FONT_FACE:Bold:12.0"
+    label.width=45
+    label.align=right
+    label.font="$FONT_FACE:Medium:12.0"
     script="$PLUGIN_SHARED_DIR/clock.sh"
     click_script="yabai -m space --focus 9"
 )
@@ -186,6 +191,7 @@ sketchybar \
     --add item volume right --set "${volume[@]}" --subscribe volume volume_change \
     --add item keyboard right --set "${keyboard[@]}" --subscribe keyboard keyboard_change \
     --add item vpn right --set "${vpn[@]}" \
+    --add item weather right --set "${weather[@]}" \
     --add event keyboard_change "AppleSelectedInputSourcesChangedNotification" \
     --update \
     --trigger space_change
